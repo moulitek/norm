@@ -1,0 +1,68 @@
+name: CI_minishell
+
+on: push
+
+jobs:
+  msg:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: install thingz
+        run: sudo apt install -y clang-tidy clang-format inkscape tcsh
+      - name: Hide file before norm
+        run : |
+          mv mouliVD .mouliVD
+          mv weblink .weblink
+      - name: Ardorax Coding Style
+        uses: Ardorax/EpitechStyle@latest
+        id: coding_style
+      - name: UnHide file before norm
+        run : |
+          mv .mouliVD mouliVD
+          mv .weblink weblink
+      - name : make flags
+        run: |
+          curl "https://img.shields.io/badge/mouli-success-light--green?style=for-the-badge&logo=Cachet" -o good-flag.svg
+          curl "https://img.shields.io/badge/mouli-build%20error-ff0000?style=for-the-badge&logo=ZeroMQ" -o bad-flag.svg
+          curl "https://img.shields.io/badge/mouli-norm%20error-ffff00?style=for-the-badge&logo=Swagger" -o norm-flag.svg
+          curl "https://img.shields.io/badge/mouli-test%20error-ff7f00?style=for-the-badge&logo=Speedtest" -o test-flag.svg
+          inkscape good-flag.svg --export-png=good-flag.png
+          inkscape bad-flag.svg --export-png=bad-flag.png
+          inkscape norm-flag.svg --export-png=norm-flag.png
+          inkscape test-flag.svg --export-png=test-flag.png
+      - name: get-wehook
+        run : |
+          web=`cat weblink`
+          echo "hook=$web" >> $GITHUB_ENV
+      - name: Compile_and_test
+        run: |
+          echo "color=16744192" >> $GITHUB_ENV
+          rm flag.png
+          mv test-flag.png flag.png
+          echo "DESCRIPTION=test-error" >> $GITHUB_ENV
+
+          ./mouliVD/script
+          echo "color=65280" >> $GITHUB_ENV
+          rm flag.png
+          mv good-flag.png flag.png
+          echo "DESCRIPTION=SUCCES" >> $GITHUB_ENV
+          type=${{ steps.coding_style.outputs.NORM }}
+          echo $type
+          if ((type == 1))
+          then
+            echo "i am here"
+            echo "color=16776960" >> $GITHUB_ENV
+            rm flag.png
+            mv norm-flag.png flag.png
+            echo "DESCRIPTION=NORM ERROR" >> $GITHUB_ENV
+          fi
+      - name: normi message
+        if: always()
+        uses: Ardorax/EpitechStyleDiscord@latest
+        with:
+          COLOR: ${{ env.color }}
+          DESCRIPTION: ${{ env.DESCRIPTION }}
+          SUMMARY: ${{ steps.coding_style.outputs.SUMMARY }}
+          FILES: trace.md;flag.png
+          USERNAME: Normeur
+          URL: ${{env.hook}}
