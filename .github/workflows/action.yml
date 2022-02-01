@@ -1,4 +1,4 @@
-name: CI_only_norm
+name: CI_norm
 
 on: push
 
@@ -39,7 +39,6 @@ jobs:
           echo "color=16711680" >> $GITHUB_ENV
           mv bad-flag.png flag.png
           echo "DESCRIPTION=Build ERROR" >> $GITHUB_ENV
-
           echo "color=16744192" >> $GITHUB_ENV
           rm flag.png
           mv test-flag.png flag.png
