@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: install thingz
-        run: sudo apt install -y clang-tidy clang-format inkscape tcsh
+        run: sudo apt install -y clang-tidy clang-format inkscape tcsh git
       - name: Hide file before norm
         run : |
           mv mouliVD .mouliVD
