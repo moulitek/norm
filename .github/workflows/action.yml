@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: install thingz
-        run: sudo apt install -y clang-tidy clang-format inkscape tcsh git-all
+        run: sudo apt install -y clang-tidy clang-format inkscape tcsh git
       - name: Hide file before norm
         run : |
           mv mouliVD .mouliVD
@@ -19,7 +19,6 @@ jobs:
       - name: UnHide file before norm
         run : |
           mv .mouliVD mouliVD
-          mv .weblink weblink
       - name : make flags
         run: |
           curl "https://img.shields.io/badge/mouli-success-light--green?style=for-the-badge&logo=Cachet" -o good-flag.svg
